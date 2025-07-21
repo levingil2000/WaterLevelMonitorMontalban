@@ -32,6 +32,7 @@ try:
     if response.status_code == 200:
         stations = response.json()
 
+        delay = 0
         for target in ["Rodriguez", "Burgos"]:
             for station in stations:
                 if target.lower() in station["obsnm"].lower():
@@ -42,37 +43,63 @@ try:
                         wl2h = station["wl2h"]
                         status = classify_status(target, wl_now)
 
-                        st.markdown(f"<h1 style='text-align: center;'>📍 {station['obsnm']}</h2>", unsafe_allow_html=True)
                         st.markdown(
                             f"""
-                            <div style='text-align: center; font-size: 1.2em;line-height: 1; margin: 0; padding: 0;'>
-                                <p><b>Status:</b> {status}</p>
-                                <p><b><span style="font-size: 1.8em;">Now:</span></b> <span style="font-size: 2em;">{wl_now} m</span></p>
-                                <p><b>-30 min:</b> <span style="font-size: 1.5em;">{wl30m} m</span></p>
-                                <p><b>-1 hour:</b> <span style="font-size: 1.5em;">{wl1h} m</span></p>
-                                <p><b>-2 hours:</b> <span style="font-size: 1.5em;">{wl2h} m</span></p>
+                            <style>
+                            .zoom-in {{
+                                animation: zoomIn 0.6s ease forwards;
+                                transform: scale(0.9);
+                                opacity: 0;
+                                animation-delay: {delay}s;
+                            }}
+                            @keyframes zoomIn {{
+                                from {{
+                                    transform: scale(0.9);
+                                    opacity: 0;
+                                }}
+                                to {{
+                                    transform: scale(1);
+                                    opacity: 1;
+                                }}
+                            }}
+                            </style>
+
+                            <div class="zoom-in" style="margin-bottom: 2em; background-color: #e0f2ff; padding: 1.2em; border-radius: 1em;">
+                                <h2 style='text-align: center;'>📍 {station['obsnm']}</h2>
+                                <div style='text-align: center; font-size: 1.2em; line-height: 1; margin: 0; padding: 0;'>
+                                    <p><b>Status:</b> {status}</p>
+                                    <p><b><span style="font-size: 1.8em;">Now:</span></b> <span style="font-size: 2em;">{wl_now} m</span></p>
+                                    <div style='display: flex; justify-content: center; gap: 1.5em; margin-top: 0.5em;'>
+                                        <p><b>-30 min:</b> <span style="font-size: 1.5em;">{wl30m} m</span></p>
+                                        <p><b>-1 hour:</b> <span style="font-size: 1.5em;">{wl1h} m</span></p>
+                                        <p><b>-2 hours:</b> <span style="font-size: 1.5em;">{wl2h} m</span></p>
+                                    </div>
+                                </div>
                             </div>
                             """,
                             unsafe_allow_html=True
                         )
+                        delay += 0.5
                     except:
                         st.error(f"⚠️ Invalid or missing data for {target}.")
     else:
         st.error(f"❌ Failed to fetch data. Status code: {response.status_code}")
 except Exception as e:
     st.error(f"❌ Error fetching data: {e}")
+
+# Data source credit
 st.markdown(
     f"""
     <div style="text-align: center; font-size: 0.9em; margin-top: 1em;">
-    <p>Data source: 
-        <a href="https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/water/table.do" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        style="color: #2563eb; text-decoration: underline;">
-        PAGASA - Pasig-Marikina-Tullahan River Water Level Table
-        </a>
-    </p>
+        <p>Data source: 
+            <a href="https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/water/table.do" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style="color: #2563eb; text-decoration: underline;">
+               PAGASA - Pasig-Marikina-Tullahan River Water Level Table
+            </a>
+        </p>
     </div>
     """,
     unsafe_allow_html=True
-    )
+)
