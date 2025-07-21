@@ -7,7 +7,7 @@ st.set_page_config(page_title="Rodriguez & Burgos Water Levels", layout="centere
 st.markdown("<h1 style='text-align: center;'>☔ Montalban Water Level Monitor</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'> Data from PAGASA | Monitoring stations in Rodriguez and Burgos</p>", unsafe_allow_html=True)
 
-# Water level thresholds (used for internal classification)
+# Water level thresholds (hard coded.. used for classification)
 thresholds = {
     "Rodriguez": {"alert": 28.80, "alarm": 29.80, "critical": 30.70},
     "Burgos": {"alert": 27.40, "alarm": 27.90, "critical": 28.40}
@@ -28,6 +28,7 @@ def classify_status(station, level):
 # Fetch data
 url = "https://pasig-marikina-tullahanffws.pagasa.dost.gov.ph/water/table_list.do"
 
+# Prepare and present the data
 try:
     response = requests.post(url, timeout=10)
     if response.status_code == 200:
