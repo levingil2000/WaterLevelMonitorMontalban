@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import datetime
 
 # Streamlit setup
 st.set_page_config(page_title="Rodriguez & Burgos Water Levels", layout="centered")
@@ -69,10 +70,10 @@ try:
                                 <div style='text-align: center; font-size: 1.2em; line-height: 1; margin: 0; padding: 0;'>
                                     <p><b>Status:</b> {status}</p>
                                     <p><b><span style="font-size: 1.8em;">Now:</span></b> <span style="font-size: 2em;">{wl_now} m</span></p>
-                                    <div style='display: flex; justify-content: center; gap: 1.5em; margin-top: 0.5em;'>
-                                        <p><b>-30 min:</b> <span style="font-size: 1.5em;">{wl30m} m</span></p>
-                                        <p><b>-1 hour:</b> <span style="font-size: 1.5em;">{wl1h} m</span></p>
-                                        <p><b>-2 hours:</b> <span style="font-size: 1.5em;">{wl2h} m</span></p>
+                                    <div style='display: flex; justify-content: center; gap: 1em; margin-top: 0.5em;'>
+                                        <p><b>-30 min:</b> <span style="font-size: 1em;">{wl30m} m</span></p>
+                                        <p><b>-1 hour:</b> <span style="font-size: 1em;">{wl1h} m</span></p>
+                                        <p><b>-2 hours:</b> <span style="font-size: 1em;">{wl2h} m</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -86,6 +87,18 @@ try:
         st.error(f"❌ Failed to fetch data. Status code: {response.status_code}")
 except Exception as e:
     st.error(f"❌ Error fetching data: {e}")
+
+#Show date and time
+fetch_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+st.markdown(
+    f"<p style='text-align: center; color: gray;'>Last updated: <b>{fetch_time}</b></p>",
+    unsafe_allow_html=True
+)
+
+#Refresh
+if st.button("🔄 Refresh Data"):
+    st.rerun()
+
 
 # Data source credit
 st.markdown(
