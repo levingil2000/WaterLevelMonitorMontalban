@@ -48,12 +48,37 @@ try:
                         st.markdown(
                             f"""
                             <style>
+                            /* Define CSS variables for colors */
+                            :root {{
+                                --div-background-color: #e0f2ff; /* Light blue for light mode */
+                                --text-color: black; /* Default text color for light mode */
+                            }}
+
+                            /* Dark mode styles */
+                            @media (prefers-color-scheme: dark) {{
+                                :root {{
+                                    --div-background-color: #1a2b40; /* Dark blue for dark mode */
+                                    --text-color: white; /* White text for dark mode */
+                                }}
+                            }}
+
                             .zoom-in {{
                                 animation: zoomIn 0.6s ease forwards;
                                 transform: scale(0.9);
                                 opacity: 0;
                                 animation-delay: {delay}s;
+                                /* Use the CSS variable for background color */
+                                background-color: var(--div-background-color);
+                                color: var(--text-color); /* Apply text color variable */
+                                margin-bottom: 2em;
+                                padding: 1.2em;
+                                border-radius: 1em;
                             }}
+
+                            .zoom-in h2, .zoom-in p, .zoom-in b, .zoom-in span {{
+                                color: var(--text-color); /* Ensure all text within the div also respects the theme */
+                            }}
+
                             @keyframes zoomIn {{
                                 from {{
                                     transform: scale(0.9);
@@ -66,7 +91,7 @@ try:
                             }}
                             </style>
 
-                            <div class="zoom-in" style="margin-bottom: 2em; background-color: #e0f2ff; padding: 1.2em; border-radius: 1em;">
+                            <div class="zoom-in">
                                 <h2 style='text-align: center;'>📍 {station['obsnm']}</h2>
                                 <div style='text-align: center; font-size: 1.2em; line-height: 1; margin: 0; padding: 0;'>
                                     <p><b>Status:</b> {status}</p>
@@ -80,7 +105,7 @@ try:
                             </div>
                             """,
                             unsafe_allow_html=True
-                        )
+                        )                        
                         delay += 0.5
                     except:
                         st.error(f"⚠️ Invalid or missing data for {target}.")
